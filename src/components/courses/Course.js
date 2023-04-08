@@ -2,40 +2,40 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.css';
 
-const User = ({ user, deleteUser }) => {
+const Course = ({ course, deleteCourse }) => {
 const navigate = useNavigate();
 
-const editUser = (e, id) => {
+const editCourse = (e, id) => {
 e.preventDefault();
-navigate(`/editUser/${id}`);
+navigate(`/editCourse/${id}`);
 };
 
 return (
-<tr key={user.id}>
+<tr key={course.id}>
               <td className="text-left font-medium text-gray-500 uppercase tracking-wider py-3 px-6">
-              <div className="text-sm text-gray-500">{user.username}</div>
+              <div className="text-sm text-gray-500">{course.name}</div>
               </td>
               <td className="text-left px-6 py-4 whitespace-nowrap">
-              <div className="text-sm text-gray-500">{user.age}</div>
+              <div className="text-sm text-gray-500">{course.description}</div>
               </td>
               <td className="text-left px-6 py-4 whitespace-nowrap">
-              <div className="text-sm text-gray-500">{user.phoneNumber}</div>
+              <div className="text-sm text-gray-500">{course.type}</div>
               </td>
               <td className="text-left px-6 py-4 whitespace-nowrap">
-              <div className="text-sm text-gray-500">{user.birthDate}</div>
+              <div className="text-sm text-gray-500">{course.author_id}</div>
               </td>
               <td className="text-left px-6 py-4 whitespace-nowrap">
-              <div className="text-sm text-gray-500">{user.sex}</div>
+              <div className="text-sm text-gray-500">{course.group_link}</div>
               </td>
               <td className="text-left px-6 py-4 whitespace-nowrap">
-              <div className="text-sm text-gray-500">{user.email}</div>
+              <div className="text-sm text-gray-500">{course.start_date}</div>
               </td>
 
               <td className="text-right px-6 py-4 whitespace-nowrap font-medium text-sm">
                             <button
                             type="button"
                             className="btn btn-link"
-                            onClick={(e, id) => editUser(e, user.id)}
+                            onClick={(e, id) => editCourse(e, course.id)}
                             >
                             Edit
                             </button>
@@ -43,7 +43,7 @@ return (
                             <button
                             type="button"
                             className="btn btn-link"
-                            onClick={(e, id) => deleteUser(e, user.id)}
+                            onClick={(e, id) => deleteCourse(e, course.id)}
                             >
                             Delete
                             </button>
@@ -53,4 +53,4 @@ return (
 );
 };
 
-export default User;
+export default Course;

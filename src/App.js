@@ -12,6 +12,11 @@ import UpdateUser from './components/user/UpdateUser';
 import Todos from './components/todo/Todos';
 import AddTodo from './components/todo/AddTodo';
 import UpdateTodo from './components/todo/UpdateTodo';
+import Courses from './components/courses/Courses';
+import AddCourse from './components/courses/AddCourse';
+import UpdateCourse from './components/courses/UpdateCourse';
+import React from 'react';
+import Profile from './pages/Profile';
 
 function App() {
     return (
@@ -26,12 +31,15 @@ function App() {
                     <Route path='/addUser' element={<AddUser />} />
                     <Route path='/editUser/:id' element={<UpdateUser />} />
                     <Route path='/roles' element={<Blank />} />
-                    <Route path='/courses' element={<Blank />} />
+                    <Route path='/courses' element={<Courses />} />
+                    <Route path='/addCourse' element={<AddCourse />} />
+                    <Route path='/editCourse/:id' element={<UpdateCourse />} />
                     <Route path='/events' element={<Blank />} />
                     <Route path='/todo' element={<Todos />} />
                     <Route path='/addTodo' element={<AddTodo />} />
                     <Route path='/editTodo/:id' element={<UpdateTodo />} />
-                    <Route path='/profile' element={<Blank />} />
+                    <Route path='/profile' element={<Profile />} />
+                    <Route path='/logout' element={<Blank />} />
                 </Route>
             </Routes>
         </BrowserRouter>

@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import 'bootstrap/dist/css/bootstrap.css';
 
 const Todo = ({ todo, deleteTodo }) => {
 const navigate = useNavigate();
@@ -27,7 +28,7 @@ return (
               <td className="text-right px-6 py-4 whitespace-nowrap font-medium text-sm">
                             <button
                             type="button"
-                            className="link-button text-sm text-indigo-500 hover:text-indigo-900 hover:cursor-pointer"
+                            className="btn btn-link"
                             onClick={(e, id) => editTodo(e, todo.todoId)}
                             >
                             Edit
@@ -35,7 +36,7 @@ return (
                             &nbsp;&nbsp;&nbsp;
                             <button
                             type="button"
-                            className="link-button text-sm text-indigo-500 hover:text-indigo-900 hover:cursor-pointer"
+                            className="btn btn-link"
                             onClick={(e, id) => deleteTodo(e, todo.todoId)}
                             >
                             Delete

@@ -1,6 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import './sidebar.scss';
+import '../login/login.css'
+import 'bootstrap/dist/css/bootstrap.css';
+import Alert from '../layout/Alert';
+import React from 'react';
 
 const pageMapping = new Map([
     ['addUser','users'],
@@ -8,41 +12,58 @@ const pageMapping = new Map([
     ['users', 'users'],
     ['roles', 'roles'],
     ['courses', 'courses'],
+    ['addCourse', 'courses'],
+    ['editCourse', 'courses'],
     ['events', 'events'],
     ['todo', 'todo'],
-    ['profile', 'profile']
+    ['addTodo', 'todo'],
+    ['editTodo', 'todo'],
+    ['profile', 'profile'],
+    ['logout','logout']
 ])
-const sidebarNavItems = [
+let sidebarNavItems = [
     {
         display: 'Users',
         icon: <i className='bx bx-user'></i>,
         to: '/users',
-        section: 'users'
+        section: 'users',
+        isAdminRole: false
     }, {
         display: 'Roles',
         icon: <i className='bx bx-group'></i>,
         to: '/roles',
-        section: 'roles'
+        section: 'roles',
+        isAdminRole: false
     }, {
         display: 'Courses',
         icon: <i className='bx bx-book-open'></i>,
         to: '/courses',
-        section: 'courses'
+        section: 'courses',
+        isAdminRole: true
     }, {
         display: 'Events',
         icon: <i className='bx bx-calendar'></i>,
         to: '/events',
-        section: 'events'
+        section: 'events',
+        isAdminRole: true
     }, {
         display: 'Todo',
         icon: <i className='bx bx-message-check'></i>,
         to: '/todo',
-        section: 'todo'
+        section: 'todo',
+        isAdminRole: true
     }, {
         display: 'My Profile',
         icon: <i className='bx bx-smile'></i>,
         to: '/profile',
-        section: 'profile'
+        section: 'profile',
+        isAdminRole: true
+    }, {
+        display: 'Logout',
+        icon: <i className='bx bx-log-out'></i>,
+        to: '/logout',
+        section: 'logout',
+        isAdminRole: true
     },
 ]
 
@@ -52,8 +73,14 @@ const Sidebar = () => {
     const sidebarRef = useRef();
     const indicatorRef = useRef();
     const location = useLocation();
+    const navigate = useNavigate()
 
     useEffect(() => {
+        const profileData = JSON.parse(sessionStorage.getItem('profileData')) || {};
+        const roles = profileData.roles;
+        if (!roles.includes('ADMIN')) {
+            sidebarNavItems = sidebarNavItems.filter(item => item.isAdminRole);
+        }
         setTimeout(() => {
             const sidebarItem = sidebarRef.current.querySelector('.sidebar__menu__item');
             indicatorRef.current.style.height = `${sidebarItem.clientHeight}px`;
@@ -63,14 +90,24 @@ const Sidebar = () => {
 
     // change active index
     useEffect(() => {
+        if(window.location.pathname.split('/')[1] === 'logout'){
+            logout()
+        }else{
         const curPath = pageMapping.get(window.location.pathname.split('/')[1]);
         const activeItem = sidebarNavItems.findIndex(item => item.section === curPath);
         setActiveIndex(curPath.length === 0 ? 0 : activeItem);
+        }
     }, [location]);
+
+    function logout() {
+        sessionStorage.removeItem('accessToken');
+        sessionStorage.removeItem('profileData');
+        navigate('/login');
+      }
 
     return <div className='sidebar'>
         <div className="sidebar__logo">
-            Upgrade Skill
+            TEACH EASY
         </div>
         <div ref={sidebarRef} className="sidebar__menu">
             <div

@@ -13,15 +13,15 @@ class TodoService {
   }
 
   deleteTodo(id) {
-    return axios.delete(TODO_BASE_URL + "/" + id);
+    return axios.delete(TODO_BASE_URL + id);
   }
 
   getTodoById(id) {
-    return axios.get(TODO_BASE_URL + "/" + id);
+    return axios.get(TODO_BASE_URL + id);
   }
 
   updateTodo(employee, id) {
-    return axios.put(TODO_BASE_URL + "/" + id, employee);
+    return axios.put(TODO_BASE_URL + id, employee);
   }
 }
  

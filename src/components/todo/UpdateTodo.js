@@ -8,14 +8,23 @@ const UpdateTodo = () => {
   const navigate = useNavigate();
   const [todo, setTodo] = useState({
     todoId: id,
-    name: "",
+    toDoName: "",
     description: "",
-    status: "",
-    createdOn: ""
+    // status: "",
+    // createdOn: ""
   });
 
   const handleChange = (e) => {
     const value = e.target.value;
+    if (e.target.name === 'toDoName') {
+      if (value) {
+        e.target.classList.remove('error-class');
+        e.target.classList.add('border');
+      } else {
+        e.target.classList.add('error-class');
+        e.target.classList.remove('border');
+      }
+    }
     setTodo({ ...todo, [e.target.name]: value });
   };
 
@@ -29,7 +38,7 @@ const UpdateTodo = () => {
       }
     };
     fetchData();
-  },[todo.id]);
+  },[todo.todoId]);
 
   const updateTodo = (e) => {
     e.preventDefault();
@@ -37,83 +46,68 @@ const UpdateTodo = () => {
     TodoService.updateTodo(todo, id)
       .then((response) => {
         console.log(response);
-        navigate("/todos");
+        navigate("/todo");
       })
       .catch((error) => {
         console.log(error);
       });
   };
+
+  const reset = (e) => {
+    e.preventDefault();
+    setTodo({
+      name: "",
+      description: "",
+      // createdOn: "",
+      // status: ""
+    });
+  };
+
   return (
-    <div className="flex max-w-2xl mx-auto shadow-xl border-b">
+    <div className="flex max-w-2xl mx-auto shadow-xl border-b" style={{padding: '3%'}}>
       <div className="px-8 py-8">
         <div className="font-thin text-2xl tracking-wider">
           <h1>Update Todo</h1>
         </div>
-
+        
         <div className="items-center justify-center h-14 w-full my-4">
-          <label className="block text-gray-600 text-sm font-normal">
-            Name
+          <label  className="block text-gray-600 col-sm-2 text-sm font-normal">
+            Name *
           </label>
           <input
-            type="text"
-            name="name"
-            value={todo.name}
+            type="text" style={{width: '30%'}}
+            name="toDoName"
+            value={todo.toDoName}
             onChange={(e) => handleChange(e)}
-            className="h-10 w-96 border mt-2 px-2 py-2"
+            className="h-10 w-96 border  mt-2 px-2 py-2"
           ></input>
         </div>
 
         <div className="items-center justify-center h-14 w-full my-4">
-          <label className="block text-gray-600 text-sm font-normal">
+          <label className="block text-gray-600  col-sm-2 text-sm font-normal">
             Description
           </label>
           <input
-            type="text"
+            type="text" style={{width: '30%'}}
             name="description"
             value={todo.description}
             onChange={(e) => handleChange(e)}
             className="h-10 w-96 border mt-2 px-2 py-2"
           ></input>
-        </div>
-
-        <div className="items-center justify-center h-14 w-full my-4">
-          <label className="block text-gray-600 text-sm font-normal">
-            Status
-          </label>
-          <input
-            type="text"
-            name="dept"
-            value={todo.status}
-            onChange={(e) => handleChange(e)}
-            className="h-10 w-96 border mt-2 px-2 py-2"
-          ></input>
-        </div>
-
-        <div className="items-center justify-center h-14 w-full my-4">
-          <label className="block text-gray-600 text-sm font-normal">
-            Created On
-          </label>
-          <input
-            type="email"
-            name="email"
-            value={todo.createdOn}
-            onChange={(e) => handleChange(e)}
-            className="h-10 w-96 border mt-2 px-2 py-2"
-          ></input>
-        </div>
+        </div>      
 
         <div className="items-center justify-center h-14 w-full my-4 space-x-4 pt-4">
           <button
             onClick={updateTodo}
-            className="rounded text-white font-semibold bg-green-400 hover:bg-green-800 py-2 px-6"
+            className="btn-secondary btn  text-white font-semibold bg-green-400 hover:bg-green-800 py-2 px-6"
           >
-            Update
+            Save
           </button>
           <button
-            onClick={() => navigate("/todos")}
-            className="rounded text-white font-semibold bg-red-400 hover:bg-red-700 py-2 px-6"
+            onClick={reset}
+            className="btn-secondary btn  text-white font-semibold  cancel bg-red-400 hover:bg-red-700 py-2 px-6"
           >
-            Cancel
+            Clear
           </button>
         </div>
       </div>

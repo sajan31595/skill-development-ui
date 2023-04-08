@@ -1,80 +1,91 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import TodoService from "../../services/TodoService";
 import Todo from "./Todo";
+import 'bootstrap/dist/css/bootstrap.css';
+import { AgGridReact } from 'ag-grid-react';
+import 'ag-grid-community/styles/ag-grid.css';
+import 'ag-grid-community/styles/ag-theme-alpine.css';
 
 const Todos = () => {
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
   const [todos, setTodos] = useState(null);
+  const gridRef = useRef();
+  const [columnDefs, setColumnDefs] = useState([
+    {field: 'name'},
+    {field: 'description'},
+    {field: 'status'},
+    {field: 'createdOn'},
+    {field: 'modifiedOn'},
+    {field: 'action', headerName: 'Action', filter: false, sortable: false, cellRenderer: params => {
+      return (
+        <div style={{display: 'flex',justifyContent: 'space-between'}}>
+          <div style={{cursor: 'pointer', color: 'rgb(102, 178, 255)'}} id="edit">Edit</div>
+          <div style={{cursor: 'pointer', color: 'rgb(102, 178, 255)'}} id="delete">Delete</div>
+        </div>
+      );
+  }}
+  ]);
+  const defaultColDef = useMemo( ()=> ({
+    sortable: true, filter: true, autoHeight: true, resizable: true
+  }));
+  const cellClickedListener = useCallback( clickEvent => {
+    console.log('cellClicked', clickEvent);
+    if (clickEvent.event.target.id === 'edit') {
+      navigate(`/editTodo/${clickEvent.data.todoId}`);
+    } else if (clickEvent.event.target.id === 'delete') {
+      deleteTodo(clickEvent.data.todoId);
+    }
+  }, []);
+
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const response = await TodoService.getTodos();
+      setTodos(response.data);
+      gridRef.current.api.sizeColumnsToFit();
+    } catch (error) {
+      console.log(error);
+    }
+    setLoading(false);
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const response = await TodoService.getTodos();
-        setTodos(response.data);
-      } catch (error) {
-        console.log(error);
-      }
-      setLoading(false);
-    };
     fetchData();
   }, []);
 
-  const deleteTodo = (e, id) => {
-    e.preventDefault();
+  const deleteTodo = (id) => {
     TodoService.deleteTodo(id).then((res) => {
-      if (todos) {
-        setTodos((prevElement) => {
-          return prevElement.filter((todo) => todo.todoId !== id);
-        });
-      }
+      fetchData();
     });
   };
 
   return (
-    <div className="container mx-auto my-8">
-      <div className="h-12">
+    <div className="container mx-auto my-8" style={{padding: '3% 0 0 2%'}}>
+      <div>
         <button
           onClick={() => navigate("/addTodo")}
-          className="rounded bg-slate-600 text-white px-6 py-2 font-semibold"
+          className="btn btn-secondary"
         >
           Add Todo
         </button>
       </div>
-      <div className="flex shadow border-b">
-        <table className="min-w-full">
-          <thead className="bg-gray-300">
-            <tr>
-              <th className="text-left font-medium text-gray-500 uppercase tracking-wider py-3 px-6">
-                Name
-              </th>
-              <th className="text-left font-medium text-gray-500 uppercase tracking-wider py-3 px-6">
-                Description
-              </th>
-              <th className="text-left font-medium text-gray-500 uppercase tracking-wider py-3 px-6">
-                Status
-              </th>
-              <th className="text-left font-medium text-gray-500 uppercase tracking-wider py-3 px-6">
-                Created on
-              </th>
-            </tr>
-          </thead>
-
-          {!loading && (
-            <tbody className="bg-white">
-              {todos.map((todo) => (
-                <Todo
-                  todo={todo}
-                  deleteTodo={deleteTodo}
-                  key={todo.todoId}
-                ></Todo>
-              ))}
-            </tbody>
-          )}
-        </table>
+      <div className="usertable ag-theme-alpine" style={{width: '76vw', height: '85vh', marginTop: '1%'}}>
+      <AgGridReact
+           ref={gridRef}
+           rowData={todos}
+           pagination={true}
+           paginationAutoPageSize={true}
+           columnDefs={columnDefs}
+           defaultColDef={defaultColDef}
+           enableCellTextSelection={true}
+           animateRows={true}
+           ensureDomOrder={true}
+           suppressCellFocus={true}
+           onCellClicked={cellClickedListener}
+           />
       </div>
     </div>
   );
