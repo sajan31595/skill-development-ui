@@ -17,6 +17,10 @@ import AddCourse from './components/courses/AddCourse';
 import UpdateCourse from './components/courses/UpdateCourse';
 import React from 'react';
 import Profile from './pages/Profile';
+import Events from './components/event/Events';
+import AddEvent from './components/event/AddEvent';
+import UpdateEvent from './components/event/UpdateEvent';
+import Roles from './components/roles/Roles';
 
 function App() {
     return (
@@ -25,16 +29,18 @@ function App() {
             <Routes>
             <Route path="/login" element={<Login />}></Route>
             <Route path="/register" element={<Register />}></Route>
-                <Route path='/' element={<AppLayout />}>
-                    <Route index element={<Blank />} />
+                <Route path='/' element={<Login />}>
+                    <Route index element={<Login />} />
                     <Route path='/users' element={<Users />} />
                     <Route path='/addUser' element={<AddUser />} />
                     <Route path='/editUser/:id' element={<UpdateUser />} />
-                    <Route path='/roles' element={<Blank />} />
+                    <Route path='/roles' element={<Roles />} />
                     <Route path='/courses' element={<Courses />} />
                     <Route path='/addCourse' element={<AddCourse />} />
                     <Route path='/editCourse/:id' element={<UpdateCourse />} />
-                    <Route path='/events' element={<Blank />} />
+                    <Route path='/events' element={<Events />} />
+                    <Route path='/addEvent' element={<AddEvent />} />
+                    <Route path='/editEvent/:id' element={<UpdateEvent />} />
                     <Route path='/todo' element={<Todos />} />
                     <Route path='/addTodo' element={<AddTodo />} />
                     <Route path='/editTodo/:id' element={<UpdateTodo />} />

@@ -11,7 +11,7 @@ const AddUser = () => {
     confirmPassword: "",
     email: "",
     age: "",
-    phone: "",
+    phoneNumber: "",
     birthDate: "",
     sex: "MALE"
   });
@@ -86,12 +86,12 @@ const AddUser = () => {
   const reset = (e) => {
     e.preventDefault();
     setUser({
-      username: "",
+    username: "",
     password: "",
     confirmPassword: "",
     email: "",
     age: "",
-    phone: "",
+    phoneNumber: "",
     birthDate: "",
     sex: "MALE"
     });
@@ -175,8 +175,8 @@ const AddUser = () => {
           </label>
           <input
             type="text" style={{width: '30%'}}
-            name="phone"
-            value={user.phone}
+            name="phoneNumber"
+            value={user.phoneNumber}
             onChange={(e) => handleChange(e)}
             className="h-10 w-96 border mt-2 px-2 py-2"
           ></input>

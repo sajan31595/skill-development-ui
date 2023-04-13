@@ -15,6 +15,8 @@ const pageMapping = new Map([
     ['addCourse', 'courses'],
     ['editCourse', 'courses'],
     ['events', 'events'],
+    ['addEvent', 'events'],
+    ['editEvent', 'events'],
     ['todo', 'todo'],
     ['addTodo', 'todo'],
     ['editTodo', 'todo'],
@@ -103,6 +105,7 @@ const Sidebar = () => {
         sessionStorage.removeItem('accessToken');
         sessionStorage.removeItem('profileData');
         navigate('/login');
+        window.location.reload();
       }
 
     return <div className='sidebar'>

@@ -1,28 +1,51 @@
 import axios from "axios";
+import UserService from "./UserService";
 
 const BASE_URL = "http://localhost:8080";
-const EVENT_BASE_URL = BASE_URL +"/api/users/";
+const EVENT_BASE_URL =  "/api/courses/";
+const config = UserService.config();
 
-class EmployeeService {
-  saveEmployee(employee) {
-    return axios.post(EMPLOYEE_BASE_URL, employee);
+class EventService {
+
+  saveEvent(event) {
+    return this.post(EVENT_BASE_URL + "addEvent", event);
   }
 
-  getEmployees() {
-    return axios.get(EMPLOYEE_BASE_URL);
+  getEvents(isAdmin) {
+    return this.get(isAdmin ? EVENT_BASE_URL + "events" : '/api/my/events');
   }
 
-  deleteEmployee(id) {
-    return axios.delete(EMPLOYEE_BASE_URL + "/" + id);
+  deleteEvent(id) {
+    return this.delete(EVENT_BASE_URL + "events/" + id);
   }
 
-  getEmployeeById(id) {
-    return axios.get(EMPLOYEE_BASE_URL + "/" + id);
+  getEventById(id) {
+    return this.get(EVENT_BASE_URL + "events/" + id);
   }
 
-  updateEmployee(employee, id) {
-    return axios.put(EMPLOYEE_BASE_URL + "/" + id, employee);
+  updateEvent(event, id) {
+    return this.update(EVENT_BASE_URL + "events/" + id, event);
   }
+
+  getEventsByCourseId(courseId) {
+    return this.get(EVENT_BASE_URL + "/courseEvents?courseId=" + courseId);
+  }
+
+  post(url, body) {
+    return axios.post(BASE_URL + url, body, config);
+}
+
+get(url) {
+  return axios.get(BASE_URL + url, config);
+}
+
+update(url, body) {
+  return axios.put(BASE_URL + url, body, config);
+}
+
+delete(url) {
+  return axios.delete(BASE_URL + url, config);
+}
 }
  
-export default new EVENT_BASE_URL();
+export default new EventService();

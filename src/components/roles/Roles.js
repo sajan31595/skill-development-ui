@@ -7,89 +7,54 @@ import $ from 'jquery';
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
-import CommonService from "../../services/CommonService";
+import RolesService from "../../services/RolesService";
 
-const Courses = () => {
-  const isAdmin = CommonService.isAdmin();
+const Roles = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
-  const [courses, setCourses] = useState(null);
-  const [enrolledUser, setEnrolledUser] = useState(null);
+  const [roles, setRoles] = useState(null);
+  const [enrolledMembers, setEnrolledMembers] = useState(null);
   const gridRef = useRef();
   const memberGridRef = useRef();
-  const [columnDefs, setColumnDefs] = useState(isAdmin ? [
-    {field: 'courseName', headerName: 'Course Name'},
+  const [columnDefs, setColumnDefs] = useState([
+    {field: 'roleType', headerName: 'Role'},
     {field: 'description', headerName: 'Description'},
-    {field: 'type', headerName: 'Type'},
-    {field: 'start_date', headerName: 'Start Date'},
-    {field: 'group_link', headerName: 'Group link'},
     {field: 'members', headerName: 'Members', filter: false, sortable: false, cellRenderer: params => {
-      // put the value in bold
       return (
         <i class="bx bx-group" style={{fontSize: '1.2rem',cursor: 'pointer', color: 'rgb(102, 178, 255)'}} id="members"></i>
       );
-  }},
-    {field: 'action', headerName: 'Action', filter: false, sortable: false, cellRenderer: params => {
-      // put the value in bold
-      return (
-        <div style={{display: 'flex',justifyContent: 'space-between'}}>
-          <div style={{cursor: 'pointer', color: 'rgb(102, 178, 255)'}} id="edit">Edit</div>
-          <div style={{cursor: 'pointer', color: 'rgb(102, 178, 255)'}} id="delete">Delete</div>
-        </div>
-      );
   }}
-  ] : [{field: 'courseName', headerName: 'Course Name'},
-  {field: 'description', headerName: 'Description'},
-  {field: 'type', headerName: 'Type'},
-  {field: 'start_date', headerName: 'Start Date'},
-  {field: 'group_link', headerName: 'Group link'}]);
+  ]);
   const [memberColumnDefs, setMemberColumnDefs] = useState([
-    {field: 'enrolled', headerName: 'Enrolled', headerCheckboxSelection: true,
-    checkboxSelection: true, filter: false, sortable: false,
-    cellRenderer: param => {return ``;},showDisabledCheckboxes: true,
-    cellStyle: params => {
-      return params.data.enrolled ? {'pointer-events': 'none', opacity: '0.4' }
-        : '';
-    }},
-    {field: 'userName', headerName: 'User'},
+    {field: 'username', headerName: 'User'},
     {field: 'email', headerName: 'Email'},
   ]);
   const defaultColDef = useMemo( ()=> ({
     sortable: true, filter: true, autoHeight: true, resizable: true, flex: 1, minWidth: 100,
   }));
   const cellClickedListener = useCallback( clickEvent => {
-    console.log('cellClicked', clickEvent);
-    if (clickEvent.event.target.id === 'edit') {
-      navigate(`/editCourse/${clickEvent.data.id}`);
-    } else if (clickEvent.event.target.id === 'delete') {
-      deleteCourse(clickEvent.data.id);
-    } else if (clickEvent.event.target.id === 'members') {
-      CourseService.getEnrolledUsers(clickEvent.data.id).then((res) => {
-        setEnrolledUser(res.data);
-        memberGridRef.current.api.forEachNode((node) =>
-          node.setSelected(!!node.data && node.data.enrolled)
-        );
+    if (clickEvent.event.target.id === 'members') {
+        setEnrolledMembers(clickEvent.data.members);
         const courseTitle = document.querySelector('#courseTitle');
-        courseTitle.setAttribute('couser-id', clickEvent.data.id);
-        courseTitle.innerHTML = clickEvent.data.courseName;
+        courseTitle.setAttribute('couser-id', clickEvent.data.roleId);
+        courseTitle.innerHTML = clickEvent.data.roleType;
         $('#myModal').modal({
           show: true
         });
-      });
     }
   }, []);
 
-  const onFirstDataRendered = useCallback((params) => {
+  /* const onFirstDataRendered = useCallback((params) => {
     memberGridRef.current.api.forEachNode((node) =>
       node.setSelected(!!node.data && node.data.enrolled)
     );
-  }, []);
+  }, []); */
 
   const fetchData = async () => {
     setLoading(true);
     try {
-      const response = await CourseService.getCourses(isAdmin);
-      setCourses(response.data);
+      const response = await RolesService.getRoles();
+      setRoles(response.data);
       gridRef.current.api.sizeColumnsToFit();
     } catch (error) {
       console.log(error);
@@ -107,7 +72,7 @@ const Courses = () => {
     });
   };
 
-  const enrollUsers = () => {
+  /* const enrollUsers = () => {
     const selectedData = memberGridRef.current.api.getSelectedNodes();
     console.log(selectedData);
     let userIds = [];
@@ -129,22 +94,22 @@ const Courses = () => {
       // memberGridRef.current.api.destroy();
       $('#myModal').modal('hide');
     });
-  };
+  }; */
 
   return (
     <div className="container mx-auto my-8" style={{padding: '3%'}}>
-      <div className="course" style={{display: isAdmin ? 'block' : 'none'}}>
+      {/* <div className="course">
         <button
           onClick={() => navigate("/addCourse")}
           className="btn btn-secondary"
         >
           Add Course
         </button>
-      </div>
+      </div> */}
       <div className="usertable ag-theme-alpine" style={{width: '74vw', height: '85vh', marginTop: '1%'}}>
       <AgGridReact
            ref={gridRef}
-           rowData={courses}
+           rowData={roles}
            pagination={true}
            paginationAutoPageSize={true}
            columnDefs={columnDefs}
@@ -168,7 +133,7 @@ const Courses = () => {
       <div class="modal-body ag-theme-alpine" id="members-modal-body" style={{width: '35vw',overflow: 'auto', height: '50vh'}}>
       <AgGridReact
     ref={memberGridRef}
-    rowData={enrolledUser}
+    rowData={enrolledMembers}
     pagination={true}
     paginationAutoPageSize={true}
     columnDefs={memberColumnDefs}
@@ -178,12 +143,12 @@ const Courses = () => {
     ensureDomOrder={true}
     rowSelection={'multiple'}
     suppressRowClickSelection={true}
-    onFirstDataRendered={onFirstDataRendered}
+    // onFirstDataRendered={onFirstDataRendered}
     />
       </div>
       <div class="modal-footer">
         {/* <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> */}
-        <button type="button" class="btn btn-primary" onClick={enrollUsers}>Enroll</button>
+        {/* <button type="button" class="btn btn-primary" onClick={enrollUsers}>Enroll</button> */}
       </div>
     </div>
   </div>
@@ -192,4 +157,4 @@ const Courses = () => {
   );
 };
 
-export default Courses;
+export default Roles;

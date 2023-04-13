@@ -1,15 +1,16 @@
 import axios from "axios";
+import UserService from "./UserService";
 
 const BASE_URL = "http://localhost:8080";
 
 const token = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJTYWphbiIsImlhdCI6MTY4MDQ1NjgxNywiZXhwIjoxNjgwNTQzMjE3fQ.JD-8IgHxKPsMTdZQPEmwG6U-qdVbbVW6Zypm1WQWLeQEgYL6Nv3efT5_0-LX-91oKH8ximf2U9VRIXHqC4qvog";
-const config = {
-    headers: { Authorization: `Bearer ${token}` }
-};
+const config = UserService.config();
 
 class CommonService {
-    constructor() {
-        
+    isAdmin() {
+        const profileData = JSON.parse(sessionStorage.getItem('profileData')) || {};
+        const roles = profileData.roles || [];
+        return (roles.includes('ADMIN') || roles.includes('INSTRUCTOR'));
     }
 
     post(url, body) {

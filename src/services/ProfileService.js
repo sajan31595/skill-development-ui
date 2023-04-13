@@ -1,9 +1,8 @@
 import axios from "axios";
+import UserService from "./UserService";
 const BASE_URL = "http://localhost:8080";
 const USER_BASE_URL = "/api/my/profile";
-const config = {
-  headers: { Authorization: `Bearer ${sessionStorage.getItem('accessToken') || ''}` }
-};
+const config = UserService.config();
 
 class ProfileService {
     constructor() {

@@ -4,7 +4,7 @@ import TodoService from "../../services/TodoService";
 
 const AddTodo = () => {
   const [todo, setTodo] = useState({
-    toDoName: "",
+    todoName: "",
     // status: "",
     description: "",
     // createdOn: ""
@@ -14,7 +14,7 @@ const AddTodo = () => {
 
   const handleChange = (e) => {
     const value = e.target.value;
-    if (e.target.name === 'toDoName') {
+    if (e.target.name === 'todoName') {
       if (value) {
         e.target.classList.remove('error-class');
         e.target.classList.add('border');
@@ -28,7 +28,7 @@ const AddTodo = () => {
 
   const saveTodo = (e) => {
     e.preventDefault();
-    if (todo.toDoName) {
+    if (todo.todoName) {
       TodoService.saveTodo(todo)
       .then((response) => {
         console.log(response);
@@ -65,8 +65,8 @@ const AddTodo = () => {
           </label>
           <input
             type="text" style={{width: '30%'}}
-            name="toDoName"
-            value={todo.toDoName}
+            name="todoName"
+            value={todo.todoName}
             onChange={(e) => handleChange(e)}
             className="h-10 w-96 border  mt-2 px-2 py-2"
           ></input>

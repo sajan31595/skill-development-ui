@@ -6,10 +6,11 @@ import 'bootstrap/dist/css/bootstrap.css';
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
+import CommonService from "../../services/CommonService";
 
 const Users = () => {
   const navigate = useNavigate();
-
+  const isAdmin = CommonService.isAdmin();
   const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState(null);
   const gridRef = useRef();
@@ -66,7 +67,7 @@ const Users = () => {
 
   return (
     <div className="container mx-auto my-8" style={{padding: '3% 0 0 2%'}}>
-      <div>
+      <div style={{display: isAdmin ? 'block' : 'none'}}>
         <button
           onClick={() => navigate("/addUser")}
           className="btn btn-secondary"

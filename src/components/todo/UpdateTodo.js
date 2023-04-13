@@ -8,7 +8,7 @@ const UpdateTodo = () => {
   const navigate = useNavigate();
   const [todo, setTodo] = useState({
     todoId: id,
-    toDoName: "",
+    todoName: "",
     description: "",
     // status: "",
     // createdOn: ""
@@ -16,7 +16,7 @@ const UpdateTodo = () => {
 
   const handleChange = (e) => {
     const value = e.target.value;
-    if (e.target.name === 'toDoName') {
+    if (e.target.name === 'todoName') {
       if (value) {
         e.target.classList.remove('error-class');
         e.target.classList.add('border');
@@ -76,8 +76,8 @@ const UpdateTodo = () => {
           </label>
           <input
             type="text" style={{width: '30%'}}
-            name="toDoName"
-            value={todo.toDoName}
+            name="todoName"
+            value={todo.todoName}
             onChange={(e) => handleChange(e)}
             className="h-10 w-96 border  mt-2 px-2 py-2"
           ></input>

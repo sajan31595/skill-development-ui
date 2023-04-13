@@ -157,7 +157,7 @@ const UpdateUser = () => {
           </label>
           <input
             type="text"
-            name="phone"
+            name="phoneNumber"
             value={user.phoneNumber}
             onChange={(e) => handleChange(e)}
             className="h-10 w-96 border mt-2 px-2 py-2"

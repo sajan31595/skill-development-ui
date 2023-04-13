@@ -1,33 +1,27 @@
 import { useEffect } from "react";
 import { React, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import ProfileService from "../services/ProfileService";
+import EventService from "../../services/EventService";
 import 'bootstrap/dist/css/bootstrap.css';
+import CourseService from "../../services/CourseService";
 
 
-const Profile = () => {
+const UpdateEvent = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
-  const [profile, setProfile] = useState({
-    id: '',
-    username: "",
-    email: "",
-    age: "",
-    phoneNumber: "",
-    birthDate: "",
-    sex: ""
+  const [event, setEvent] = useState({
+    eventId: "",
+    eventName: "",
+    eventType: "",
+    eventDescription: "",
+    eventDate: "",
+    courseId: "",
+    courseName: "",
   });
 
   const handleChange = (e) => {
     const value = e.target.value;
-    if (e.target.name === 'email') {
-      if ((/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(value))) {
-        e.target.classList.remove('error-class');
-        e.target.classList.add('border');
-      } else {
-        e.target.classList.add('error-class');
-        e.target.classList.remove('border');
-      }
-    } else if (e.target.name === 'username') {
+    if (e.target.name === 'eventName') {
       if (value) {
         e.target.classList.remove('error-class');
         e.target.classList.add('border');
@@ -36,27 +30,38 @@ const Profile = () => {
         e.target.classList.remove('border');
       }
     }
-    setProfile({ ...profile, [e.target.name]: value });
+    setEvent({ ...event, [e.target.name]: value });
   };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await ProfileService.getProfile();
-        setProfile(response.data);
+        const response = await EventService.getEventById(id);
+        const res = await CourseService.getCourses();
+        setEvent(response.data);
+        showCourses(res.data, response.data?.courseId);
       } catch (error) {
         console.log(error);
       }
     };
     fetchData();
-  },[]);
+  },[id]);
 
-  const updateProfile = (e) => {
+  const showCourses = (coursesList, selectedCourseId) => {
+    let courses = ``;
+    coursesList.forEach(element => {
+      courses += `<option value="${element.id}" ${element.id === selectedCourseId ? 'selected' : ''}>${element.courseName}</option>`
+    });
+    document.querySelector('#courseId').innerHTML = courses;
+  };
+
+  const updateEvent = (e) => {
     e.preventDefault();
-    console.log(profile);
-    ProfileService.updateProfile(profile)
+    console.log(event);
+    EventService.updateEvent(event, id)
       .then((response) => {
-        alert('Your Profile has been updated!!!');
+        console.log(response);
+        navigate("/events");
       })
       .catch((error) => {
         console.log(error);
@@ -65,13 +70,14 @@ const Profile = () => {
 
   const reset = (e) => {
     e.preventDefault();
-    setProfile({
-      username: "",
-    email: "",
-    age: "",
-    phoneNumber: "",
-    birthDate: "",
-    sex: "MALE"
+    setEvent({
+      eventId: "",
+    eventName: "",
+    eventType: "",
+    eventDescription: "",
+    eventDate: "",
+    courseId: "",
+    courseName: "",
     });
   };
 
@@ -79,69 +85,43 @@ const Profile = () => {
     <div className="flex max-w-2xl mx-auto shadow-xl border-b" style={{padding: '3%'}}>
       <div className="px-8 py-8">
         <div className="font-thin text-2xl tracking-wider">
-          <h1>Update User</h1>
+          <h1>Add Event</h1>
         </div>
         
         <div className="items-center justify-center h-14 w-full my-4">
           <label  className="block text-gray-600 col-sm-2 text-sm font-normal">
-            User Name *
+            Event Name *
           </label>
           <input
-            type="text"
-            name="username"
-            value={profile.username}
+            type="text" style={{width: '30%'}}
+            name="eventName"
+            value={event.eventName}
             onChange={(e) => handleChange(e)}
             className="h-10 w-96 border  mt-2 px-2 py-2"
           ></input>
         </div>
 
-        <div className="items-center justify-center h-14 w-full my-4">
+        <div style={{display: 'flex'}}>
           <label className="block text-gray-600 col-sm-2 text-sm font-normal">
-            Email *
+            Description
           </label>
-          <input
-            type="email"
-            name="email"
-            value={profile.email}
+          <textarea
+            style={{width: '30%'}}
+            name="eventDescription"
+            value={event.eventDescription}
             onChange={(e) => handleChange(e)}
             className="h-10 w-96 border mt-2 px-2 py-2"
-          ></input>
+          ></textarea>
         </div>
 
         <div className="items-center justify-center h-14 w-full my-4">
           <label className="block text-gray-600 col-sm-2 text-sm font-normal">
-            Age
+            Type
           </label>
           <input
-            type="number"
-            name="age"
-            value={profile.age}
-            onChange={(e) => handleChange(e)}
-            className="h-10 w-96 border mt-2 px-2 py-2"
-          ></input>
-        </div>
-
-        <div className="items-center justify-center h-14 w-full my-4">
-          <label className="block text-gray-600  col-sm-2 text-sm font-normal">
-            Phone
-          </label>
-          <input
-            type="text"
-            name="phoneNumber"
-            value={profile.phoneNumber}
-            onChange={(e) => handleChange(e)}
-            className="h-10 w-96 border mt-2 px-2 py-2"
-          ></input>
-        </div>
-
-        <div className="items-center justify-center h-14 w-full my-4">
-          <label className="block text-gray-600 col-sm-2 text-sm font-normal">
-            Date of Birth
-          </label>
-          <input
-            type="date"
-            name="birthDate"
-            value={profile.birthDate}
+            type="text" style={{width: '30%'}}
+            name="eventType"
+            value={event.eventType}
             onChange={(e) => handleChange(e)}
             className="h-10 w-96 border mt-2 px-2 py-2"
           ></input>
@@ -149,18 +129,30 @@ const Profile = () => {
 
         <div className="items-center justify-center h-14 w-full my-4">
           <label className="block text-gray-600 col-sm-2  text-sm font-normal">
-            Sex
+            Course
           </label>
-          <select type="dropdown-item" name="sex" value={profile.sex} 
-          onChange={(e) => handleChange(e)} className="h-10 w-96 border mt-2 px-2 py-2">
-            <option value="MALE">MALE</option>
-            <option value="FEMALE">FEMALE</option>
+          <select type="dropdown-item" name="courseId" value={event.courseId} style={{width: '30%'}}
+          onChange={(e) => handleChange(e)} className="h-10 w-96 border mt-2 px-2 py-2" id="courseId">
+            <option></option>
           </select>
-        </div>       
+        </div>
+
+        <div className="items-center justify-center h-14 w-full my-4">
+          <label className="block text-gray-600 col-sm-2 text-sm font-normal">
+            Event Date
+          </label>
+          <input
+            type="date" style={{width: '30%'}}
+            name="eventDate"
+            value={event.eventDate}
+            onChange={(e) => handleChange(e)}
+            className="h-10 w-96 border mt-2 px-2 py-2"
+          ></input>
+        </div>
 
         <div className="items-center justify-center h-14 w-full my-4 space-x-4 pt-4">
           <button
-            onClick={updateProfile}
+            onClick={updateEvent}
             className="btn-secondary btn  text-white font-semibold bg-green-400 hover:bg-green-800 py-2 px-6"
           >
             Update
@@ -177,4 +169,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default UpdateEvent;

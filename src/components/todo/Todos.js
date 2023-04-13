@@ -14,7 +14,7 @@ const Todos = () => {
   const [todos, setTodos] = useState(null);
   const gridRef = useRef();
   const [columnDefs, setColumnDefs] = useState([
-    {field: 'name'},
+    {field: 'todoName'},
     {field: 'description'},
     {field: 'status'},
     {field: 'createdOn'},

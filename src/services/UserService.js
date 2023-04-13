@@ -6,9 +6,6 @@ const config = {
 };
 
 class UserService {
-    constructor() {
-    }
-    
     saveUser(user) {
         return this.post(USER_BASE_URL, user);
     }
@@ -37,6 +34,10 @@ class UserService {
         return profileData;
     }
 
+    registerUser(user) {
+        return this.post('/api/auth/register', user);
+    }
+
     post(url, body) {
           return axios.post(BASE_URL + url, body, config);
     }
@@ -51,6 +52,10 @@ class UserService {
 
     delete(url) {
         return axios.delete(BASE_URL + url, config);
+    }
+
+    config() {
+        return config;
     }
 }
 
