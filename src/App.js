@@ -21,6 +21,7 @@ import Events from './components/event/Events';
 import AddEvent from './components/event/AddEvent';
 import UpdateEvent from './components/event/UpdateEvent';
 import Roles from './components/roles/Roles';
+import Sidebar from './components/sidebar/Sidebar';
 
 function App() {
     return (
@@ -29,7 +30,7 @@ function App() {
             <Routes>
             <Route path="/login" element={<Login />}></Route>
             <Route path="/register" element={<Register />}></Route>
-                <Route path='/' element={<Login />}>
+                <Route path='/' element={<AppLayout />}>
                     <Route index element={<Login />} />
                     <Route path='/users' element={<Users />} />
                     <Route path='/addUser' element={<AddUser />} />

@@ -11,8 +11,16 @@ class CourseService {
     return this.post(COURSE_BASE_URL, employee);
   }
 
+  getAllCourses() {
+    return this.get(COURSE_BASE_URL);
+  }
+
   getCourses(isAdmin) {
     return this.get(isAdmin ? COURSE_BASE_URL : '/api/my/courses');
+  }
+
+  myCourses() {
+    return this.get('/api/my/courses');
   }
 
   deleteCourse(id) {

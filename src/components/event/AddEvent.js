@@ -20,7 +20,7 @@ const AddEvent = () => {
 
   const fetchData = async () => {
     try {
-      const response = await CourseService.getCourses();
+      const response = await CourseService.getAllCourses();
       setCourses(response.data);
       showCourses(response.data);
     } catch (error) {
