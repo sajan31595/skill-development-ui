@@ -6,5 +6,6 @@
     - Google font: https://fonts.google.com/
 
 # Start
+    - npm install (Once)
     - npm start
     - npm run
